@@ -1,49 +1,62 @@
 # Laravel Fusion Report
 
 ## 📌 Sobre o Projeto
-O **Laravel Fusion Report** é um package para Laravel para facilitar as requições api gerar relatórios.
+
+**Laravel Fusion Report** é um package para Laravel que facilita a geração de relatórios via API.
 
 ## ✨ Funcionalidades
-- 🔑 **Autenticação via Chave Api** usando uma chave api gerado na sua conta você consegue fazer requisições api
-- 🏷 **Gerar Relatórios nos formatos:** você pode gerar relatórios em pdf, rtf, docx, odt, html, xml, xls, xlsx, csv, ods, pptx e xhtml
+
+* 🔑 **Autenticação via API Key**
+  Use uma chave gerada na sua conta para autenticar suas requisições.
+* 🏽 **Geração de Relatórios**
+  Suporta os formatos: `pdf`, `rtf`, `docx`, `odt`, `html`, `xml`, `xls`, `xlsx`, `csv`, `ods`, `pptx`, `xhtml`.
 
 ---
 
 ## 🚀 Instalação
 
 ### 1️⃣ Requisitos
-Antes de instalar, certifique-se de que seu projeto atenda aos seguintes requisitos:
-- PHP >= 8.0
-- Laravel >= 10
-- Composer instalado
+
+* PHP >= 8.0
+* Laravel >= 10
+* Composer instalado
 
 ### 2️⃣ Instalação do Package
-Execute o seguinte comando no terminal:
+
 ```bash
-  composer require risetechapps/fusion-report-for-laravelfusion-report-for-laravel
+composer require risetechapps/fusion-report-for-laravel
 ```
 
-### 3️⃣ Crie a Variável e coloque o seu token
-```bash
-  FUSION_REPORT_TOKEN=xxxxxxx
+### 3️⃣ Configuração
+
+Adicione sua chave de API no arquivo `.env`:
+
+```env
+FUSION_REPORT_TOKEN=xxxxxxxxxxxx
 ```
 
-## ✅ Registrando Rota
+---
 
+## ✅ Registro das Rotas
+
+Adicione isso ao seu `routes/api.php` ou provedor de rotas:
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Route;
+use RiseTechApps\FusionReportLaravel\FusionReportLaravelFacade;
 
-RiseTechApps\FusionReportLaravel\FusionReportLaravelFacade::routes(['middleware' => ['auth:sanctum']]);
+FusionReportLaravelFacade::routes([
+    'middleware' => ['auth:sanctum']
+]);
 ```
 
-### 📥 Exemplo de Requisição via Curl
+---
 
-Esse exemplo envia um corpo JSON para gerar relatórios, o id é o tipo de relatório que você deseja gerar, o theme é o tema do relatório, locale é o idioma, format é o formato do relatório e data são os dados que serão utilizados no relatório.
+## 📤 Exemplo de Requisição
 
-```curl
+### 📥 Via Curl
+
+```bash
 curl -X POST http://localhost:8000/reports/generate \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
@@ -57,59 +70,77 @@ curl -X POST http://localhost:8000/reports/generate \
   }'
 ```
 
-### 📥 Exemplo de Requisição via JavaScript (fetch)
+### 📥 Via JavaScript (fetch)
 
-Esse exemplo envia um corpo JSON para gerar relatórios, o id é o tipo de relatório que você deseja gerar, o theme é o tema do relatório, locale é o idioma, format é o formato do relatório e data são os dados que serão utilizados no relatório.
 ```js
 fetch('http://localhost:8000/reports/generate', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-        id: "profile_company",
-        theme: "default",
-        queue: false,
-        locale: "pt-br",
-        format: ["pdf"],
-        data: []
-    })
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({
+    id: "profile_company",
+    theme: "default",
+    queue: false,
+    locale: "pt-br",
+    format: ["pdf"],
+    data: []
+  })
 })
-    .then(res => res.json())
-    .then(data => console.log(data));
+  .then(res => res.json())
+  .then(data => console.log(data));
 ```
 
+### 📬 Exemplo de Resposta
 
-
-
-#### Exemplo de Resposta:
 ```json
 {
-    "success": true,
-    "data": {
-        "queue": false,
-        "links": {
-            "pdf": "https://ewr1.fusionreports.com/risetech/reports/public/55ca10c5-a7a0-433c-ad9b-cfd0d2ea90f8/01JW70WPQ0T8H0PFX5MVQEHV2S/Company%20-%20Profile.pdf"
-        }
+  "success": true,
+  "data": {
+    "queue": false,
+    "links": {
+      "pdf": "https://ewr1.fusionreports.com/risetech/reports/public/..."
     }
+  }
 }
 ```
 
+---
 
-## 🛠 Contribuição
-Sinta-se à vontade para contribuir! Basta seguir estes passos:
+## ⏳ Execução em Segundo Plano
+
+Para gerar o relatório em **segundo plano**, defina `"queue": true`.
+Você poderá ouvir o evento `ReportGenerateEvent` para saber quando ele for concluído.
+
+---
+
+## ✉️ Envio por E-mail
+
+Para **enviar o relatório por e-mail**, adicione os seguintes parâmetros ao corpo:
+
+```json
+{
+  "send_email": true,
+  "email": ["usuario@example.com"]
+}
+```
+
+---
+
+## 🛠 Contribuindo
+
 1. Faça um fork do repositório
-2. Crie uma branch (`feature/nova-funcionalidade`)
-3. Faça um commit das suas alterações
+2. Crie uma branch: `feature/sua-feature`
+3. Commit suas alterações
 4. Envie um Pull Request
 
 ---
 
 ## 📜 Licença
-Este projeto é distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+Distribuído sob a licença [MIT](LICENSE).
 
 ---
 
-💡 **Desenvolvido por [Rise Tech](https://risetech.com.br)**
-
+💡 Desenvolvido por [Rise Tech](https://risetech.com.br)
