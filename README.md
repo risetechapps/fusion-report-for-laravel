@@ -1,19 +1,11 @@
-# Laravel Orchestrator Link
+# Laravel Fusion Report
 
 ## 📌 Sobre o Projeto
-O **Laravel Orchestrator Link** é um package para Laravel para facilitar as requições api para o Orchestrator.
+O **Laravel Fusion Report** é um package para Laravel para facilitar as requições api gerar relatórios.
 
 ## ✨ Funcionalidades
 - 🔑 **Autenticação via Chave Api** usando uma chave api gerado na sua conta você consegue fazer requisições api
-- 🏷 **Consultar CPF** você pode validar o cpf e pesquisar dados como nome e data de nascimento do cpf
-- 🏷 **Consultar CNPJ** você pode validar o cnpj e pesquisar dados como razão social, socios, telefones e endereços do cnpj
-- 🏷 **Consultar Endereços** você pode consutar endereços atraves do cep, como paises, estados e cidades
-- 🏷 **Consultar Bancos** você pode consultar bancos e seus codigos de todos os bancos do territorio brasileiro
-- 🏷 **Consultar Bancos** você pode consultar bancos e seus codigos de todos os bancos do territorio brasileiro
-- 🏷 **Consultar Feriados** você pode consultar ferados em todo o territorio brasileiro
-- 🏷 **Consultar Clima** você pode consultar clime de todas as cidades brasileiras
-- 🏷 **Consultar Dominios** você pode verificar se dominio está em uso e seus nameserver
-
+- 🏷 **Gerar Relatórios nos formatos:** você pode gerar relatórios em pdf, rtf, docx, odt, html, xml, xls, xlsx, csv, ods, pptx e xhtml
 
 ---
 
@@ -28,38 +20,78 @@ Antes de instalar, certifique-se de que seu projeto atenda aos seguintes requisi
 ### 2️⃣ Instalação do Package
 Execute o seguinte comando no terminal:
 ```bash
-  composer require risetechapps/orchestrator-link-for-laravel
+  composer require risetechapps/fusion-report-for-laravelfusion-report-for-laravel
 ```
 
 ### 3️⃣ Crie a Variável e coloque o seu token
 ```bash
-  ORCHESTRATOR_TOKEN=xxxxxxx
+  FUSION_REPORT_TOKEN=xxxxxxx
 ```
 
----
+## ✅ Registrando Rota
 
-## 🔑 Autenticação via API
 
-### 🔹 Rota de CPF
-**Endpoint:** `/services/cpf/{cpf}/{date}`
-**Método:** `POST`
+```php
+<?php
 
-#### Exemplo de Requisição:
-```json
-{
-    "cpf": "98765432100",
-    "date": "00-00-0000"
-}
+use Illuminate\Support\Facades\Route;
+
+RiseTechApps\FusionReportLaravel\FusionReportLaravelFacade::routes(['middleware' => ['auth:sanctum']]);
 ```
+
+### 📥 Exemplo de Requisição via Curl
+
+Esse exemplo envia um corpo JSON para gerar relatórios, o id é o tipo de relatório que você deseja gerar, o theme é o tema do relatório, locale é o idioma, format é o formato do relatório e data são os dados que serão utilizados no relatório.
+
+```curl
+curl -X POST http://localhost:8000/reports/generate \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "profile_company",
+    "theme": "default",
+    "queue": false,
+    "locale": "pt-br",
+    "format": ["pdf"],
+    "data": []
+  }'
+```
+
+### 📥 Exemplo de Requisição via JavaScript (fetch)
+
+Esse exemplo envia um corpo JSON para gerar relatórios, o id é o tipo de relatório que você deseja gerar, o theme é o tema do relatório, locale é o idioma, format é o formato do relatório e data são os dados que serão utilizados no relatório.
+```js
+fetch('http://localhost:8000/reports/generate', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+        id: "profile_company",
+        theme: "default",
+        queue: false,
+        locale: "pt-br",
+        format: ["pdf"],
+        data: []
+    })
+})
+    .then(res => res.json())
+    .then(data => console.log(data));
+```
+
+
+
 
 #### Exemplo de Resposta:
 ```json
 {
-    "status": "true",
+    "success": true,
     "data": {
-        "name": "Fulano 1",
-        "cpf": "98765432100",
-        "date": "00-00-0000"
+        "queue": false,
+        "links": {
+            "pdf": "https://ewr1.fusionreports.com/risetech/reports/public/55ca10c5-a7a0-433c-ad9b-cfd0d2ea90f8/01JW70WPQ0T8H0PFX5MVQEHV2S/Company%20-%20Profile.pdf"
+        }
     }
 }
 ```
