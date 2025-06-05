@@ -19,6 +19,8 @@ class FusionReportLaravelServiceProvider extends ServiceProvider
             ], 'config');
         }
 
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'fusion');
+
         $rules = config('rules.forms');
 
         $rules['report_generate'] = [
