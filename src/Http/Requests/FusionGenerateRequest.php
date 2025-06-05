@@ -33,7 +33,9 @@ class FusionGenerateRequest extends FormRequest
 
     public function messages(): array
     {
-        return $this->messages;
+        return array_map(function ($value) {
+            return __('fusion::validation.' . $value);
+        }, $this->result['messages']);
     }
 
     public function authorize(): bool

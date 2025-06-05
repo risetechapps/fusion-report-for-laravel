@@ -37,17 +37,12 @@ class FusionReportLaravelController extends Controller
 
                     event(new ReportGenerateEvent(auth()->user(), $data, $response['data']));
 
-                    logglyError()->withRequest($request)
-                        ->performedOn(self::class)
-                        ->withProperties(['params' => $data, 'response' => $response])
-                        ->withTags(['action' => 'generate'])->log("Success when generating report");
+                    logglyInfo()->withRequest($request)->withProperties(['params' => $data, 'response' => $response])->log("Success when generating report");
 
                     return response()->jsonSuccess($response);
                 } else {
 
-                    logglyError()->withRequest($request)
-                        ->performedOn(self::class)
-                        ->withTags(['action' => 'generate'])->log("Error when generating report");
+                    logglyError()->withRequest($request)->performedOn(self::class)->log("Error when generating report");
 
                     return response()->jsonGone('Error generate report');
                 }
@@ -55,18 +50,13 @@ class FusionReportLaravelController extends Controller
 
             dispatch(new ReportGenerateJob(auth()->user(), $data));
 
-            logglyError()->withRequest($request)
-                ->performedOn(self::class)
-                ->withProperties(['params' => $data])
-                ->withTags(['action' => 'generate'])->log("Success when generating report");
+            logglyInfo()->withRequest($request)->withProperties(['params' => $data])->log("Success when generating report");
 
             return response()->jsonSuccess(['queue' => true]);
 
         } catch (\Exception $exception) {
 
-            logglyError()->withRequest($request)->exception($exception)
-                ->performedOn(self::class)
-                ->withTags(['action' => 'generate'])->log("Error when generating report");
+            logglyError()->withRequest($request)->exception($exception)->log("Error when generating report");
 
             return response()->jsonGone('Error when generating report');
         }

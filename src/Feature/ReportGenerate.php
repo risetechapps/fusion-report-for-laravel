@@ -33,11 +33,7 @@ class ReportGenerate
             return [];
         } catch (\Exception $exception) {
 
-            logglyError()
-                ->exception($exception)
-                ->performedOn(self::class)
-                ->withProperties(['type' => $type, 'params' => $params])
-                ->withTags(['action' => 'generate'])->log("Error when generating report");
+            logglyError()->exception($exception)->withProperties(['type' => $type, 'params' => $params])->log("Error when generating report");
             return [];
         }
 
